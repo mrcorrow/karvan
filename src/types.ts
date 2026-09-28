@@ -85,6 +85,10 @@ export interface Profile {
   vehicle: VehicleKey
   plate: string
   avatar: string
+  /** Topluluk profilinde görünen şehir. */
+  city: string
+  /** Topluluk profilinde görünen kısa tanıtım. */
+  bio: string
   /** 100 km'de ortalama yakıt tüketimi (L). */
   consumption: number
   /** Yakıt litre fiyatı (TL). */
@@ -114,4 +118,99 @@ export interface Place {
   name: string
   lat: number
   lon: number
+}
+
+/* --------------------------------------------------------------------------
+   TOPLULUK (sosyal katman)
+   -------------------------------------------------------------------------- */
+
+/** Uygulama içindeki karavancı. `me` kimliği kullanıcının kendisidir. */
+export interface CommunityUser {
+  id: string
+  name: string
+  avatar: string
+  /** Avatar halkası için renk tonu anahtarı. */
+  tint: string
+  vehicle: VehicleKey
+  plate: string
+  bio: string
+  city: string
+  /** Katılım yılı, örn. "2021". */
+  since: string
+  followers: number
+  following: number
+  /** Doğrulanmış hesap (işletme / içerik üreticisi). */
+  verified?: boolean
+}
+
+/** Paylaşılan gezi özeti — gönderiye iliştirilir. */
+export interface SharedRoute {
+  distanceKm: number
+  nights: number
+  totalCost: number
+  stops: number
+  tripId?: string
+}
+
+export interface PostComment {
+  id: string
+  userId: string
+  text: string
+  createdAt: number
+  likes: number
+  likedByMe: boolean
+}
+
+export interface CommunityPost {
+  id: string
+  userId: string
+  text: string
+  image?: string
+  /** Etiketlenen tesis. */
+  campId?: string
+  /** Serbest yer bilgisi (tesis etiketi yoksa). */
+  place?: string
+  /** Konu etiketi (#rota gibi). */
+  topic?: string
+  route?: SharedRoute
+  createdAt: number
+  likes: number
+  likedByMe: boolean
+  saved: boolean
+  comments: PostComment[]
+  /** Kullanıcının kendi paylaşımı mı? */
+  mine?: boolean
+}
+
+export interface CommunityEvent {
+  id: string
+  title: string
+  city: string
+  lat: number
+  lon: number
+  startDate: string
+  endDate: string
+  image: string
+  description: string
+  campId?: string
+  hostId: string
+  tags: string[]
+  /** Katılımcı kullanıcı kimlikleri. */
+  attendees: string[]
+  capacity: number
+  /** Katılım ücreti (0 = ücretsiz). */
+  fee: number
+}
+
+export type NotificationKind = 'like' | 'comment' | 'follow' | 'event' | 'system'
+
+export interface AppNotification {
+  id: string
+  kind: NotificationKind
+  userId?: string
+  postId?: string
+  eventId?: string
+  text: string
+  createdAt: number
+  read: boolean
 }

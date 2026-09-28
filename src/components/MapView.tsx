@@ -125,16 +125,17 @@ export default function MapView({
     if (!map || !layer || !ready) return
     layer.clearLayers()
 
-    for (const marker of markers) {
+    markers.forEach((marker, markerIndex) => {
       const isCamp = marker.kind === undefined || marker.kind === 'camp'
       const classes = ['pin']
       if (marker.highlight) classes.push('pin--active')
       if (marker.kind === 'stop') classes.push('pin--stop')
       if (marker.kind === 'place') classes.push('pin--place')
 
+      const delay = `animation-delay:${Math.min(markerIndex, 14) * 45}ms`
       const html = isCamp
-        ? `<span class="${classes.join(' ')}"><b>${marker.price ? `${marker.price} ₺` : marker.label}</b></span>`
-        : `<span class="${classes.join(' ')}"><i></i></span>`
+        ? `<span class="${classes.join(' ')}" style="${delay}"><b>${marker.price ? `${marker.price} ₺` : marker.label}</b></span>`
+        : `<span class="${classes.join(' ')}" style="${delay}"><i></i></span>`
 
       const icon = L.divIcon({
         html,
@@ -147,7 +148,7 @@ export default function MapView({
       leafletMarker.bindTooltip(marker.label, { direction: 'top', offset: [0, -12], opacity: 0.95 })
       leafletMarker.on('click', () => onSelect?.(marker.id))
       leafletMarker.addTo(layer)
-    }
+    })
 
     if (polyline && polyline.length > 1) {
       L.polyline(polyline, {
@@ -155,6 +156,7 @@ export default function MapView({
         weight: 3,
         dashArray: '7 7',
         opacity: 0.75,
+        className: 'route-path',
       }).addTo(layer)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

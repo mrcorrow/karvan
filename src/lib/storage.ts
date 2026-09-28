@@ -37,4 +37,7 @@ export const KEYS = {
   onboarded: 'onboarded',
   visited: 'visited',
   reviews: 'my-reviews',
+  social: 'social',
+  notifications: 'notifications',
+  freshIds: 'fresh-posts',
 } as const

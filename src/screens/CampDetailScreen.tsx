@@ -22,6 +22,7 @@ import {
   X,
 } from 'lucide-react'
 import { useApp } from '../store/AppStore'
+import { useSocial } from '../store/SocialStore'
 import { useToast } from '../components/Toast'
 import { camps, getCamp } from '../data/camps'
 import { amenityTerm, campTypeTerm, sceneryTerm, TYPE_LABEL } from '../data/taxonomy'
@@ -31,6 +32,9 @@ import { KEYS, loadJSON, saveJSON } from '../lib/storage'
 import Rating from '../components/Rating'
 import MapView from '../components/MapView'
 import CampCard from '../components/CampCard'
+import PostCard from '../components/PostCard'
+import AvatarStack from '../components/AvatarStack'
+import { campVisitors } from '../data/community'
 import type { Review } from '../types'
 
 export default function CampDetailScreen() {
@@ -50,6 +54,19 @@ export default function CampDetailScreen() {
   const nearby = useMemo(
     () => (camp ? nearestCamps(camps, camp, 3, camp.id) : []),
     [camp],
+  )
+
+  const { posts: communityPosts, getUser } = useSocial()
+  const campPosts = useMemo(
+    () => (camp ? communityPosts.filter((post) => post.campId === camp.id).slice(0, 3) : []),
+    [communityPosts, camp],
+  )
+  const visitors = useMemo(
+    () =>
+      (camp ? (campVisitors[camp.id] ?? []) : [])
+        .map((id) => getUser(id))
+        .filter((user): user is NonNullable<typeof user> => Boolean(user)),
+    [camp, getUser],
   )
 
   // Son görüntülenenler listesine ekle
@@ -356,6 +373,40 @@ export default function CampDetailScreen() {
             Apple Haritalar
           </a>
         </div>
+      </section>
+
+      <section className="section">
+        <div className="section__head">
+          <h2>
+            <MessageSquare size={16} aria-hidden /> Karavancılar burada ne diyor?
+          </h2>
+          <Link to="/akis" className="section__link">
+            Akış
+          </Link>
+        </div>
+
+        {visitors.length > 0 && (
+          <div className="camp-visitors">
+            <AvatarStack users={visitors} />
+            <span className="muted">
+              {visitors.map((user) => user.name.split(' ')[0]).join(', ')} son dönemde burada konakladı
+            </span>
+          </div>
+        )}
+
+        {campPosts.length > 0 ? (
+          <div className="post-list post-list--compact">
+            {campPosts.map((post, index) => (
+              <PostCard key={post.id} post={post} index={index} showRouteCard={false} />
+            ))}
+          </div>
+        ) : (
+          <p className="muted">Bu tesis için henüz paylaşım yok. İlk notu sen bırak.</p>
+        )}
+
+        <Link to={`/akis/yeni?kamp=${camp.id}`} className="btn btn--ghost btn--block">
+          <Plus size={16} aria-hidden /> Burada konakladım, paylaşmak istiyorum
+        </Link>
       </section>
 
       <section className="section">

@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
   Banknote,
   Caravan,
   CircleHelp,
+  ExternalLink,
   Download,
   Gauge,
   Heart,
@@ -18,13 +20,19 @@ import {
   Wallet,
 } from 'lucide-react'
 import { useApp } from '../store/AppStore'
+import { useSocial } from '../store/SocialStore'
 import { useToast } from '../components/Toast'
+import Avatar from '../components/Avatar'
 import { VEHICLES } from '../data/taxonomy'
 import { formatPrice, num } from '../lib/format'
+import { normalizePlate } from '../lib/plate'
 import { DEMO_LOCATION } from '../lib/demo'
+import { plateCity } from '../lib/plate'
+import { useCountUp } from '../hooks/animations'
 import { KEYS, removeKey } from '../lib/storage'
 
-const AVATARS = ['🚐', '🏕️', '🧭', '🌊', '🔥', '⛰️', '🐕', '☕']
+/** Boş değer, isimden türetilen baş harflerin kullanılacağı anlamına gelir. */
+const AVATARS = ['', '🚐', '🏕️', '🧭', '🌊', '🔥', '⛰️', '🐕']
 
 interface InstallPromptEvent extends Event {
   prompt: () => Promise<void>
@@ -34,6 +42,9 @@ interface InstallPromptEvent extends Event {
 export default function ProfileScreen() {
   const { profile, updateProfile, theme, setTheme, location, locationLabel, setLocation, favorites, trips, visited } =
     useApp()
+  const { posts: communityPosts, me, followerCount } = useSocial()
+  const myPosts = communityPosts.filter((post) => post.mine)
+  const followers = useCountUp(followerCount('me'), 900)
   const { show } = useToast()
   const [kmInput, setKmInput] = useState('400')
   const [roundTrip, setRoundTrip] = useState(true)
@@ -94,7 +105,7 @@ export default function ProfileScreen() {
 
       <section className="card profile-card">
         <div className="profile-card__top">
-          <span className="profile-card__avatar">{profile.avatar}</span>
+          <Avatar user={me} size="xl" />
           <label className="field-input field-input--inline">
             <span>Adınız</span>
             <input
@@ -106,15 +117,15 @@ export default function ProfileScreen() {
           </label>
         </div>
         <div className="avatar-row">
-          {AVATARS.map((emoji) => (
+          {AVATARS.map((choice) => (
             <button
-              key={emoji}
+              key={choice || 'harf'}
               type="button"
-              className={`avatar-choice${profile.avatar === emoji ? ' is-active' : ''}`}
-              onClick={() => updateProfile({ avatar: emoji })}
-              aria-label={`Avatar ${emoji}`}
+              className={`avatar-choice${profile.avatar === choice ? ' is-active' : ''}`}
+              onClick={() => updateProfile({ avatar: choice })}
+              aria-label={choice ? `Avatar ${choice}` : 'Baş harfleri kullan'}
             >
-              {emoji}
+              {choice || <Avatar user={{ ...me, avatar: '' }} />}
             </button>
           ))}
         </div>
@@ -145,10 +156,15 @@ export default function ProfileScreen() {
           <span>Plaka (isteğe bağlı)</span>
           <input
             value={profile.plate}
-            onChange={(event) => updateProfile({ plate: event.target.value.toUpperCase() })}
+            onChange={(event) => updateProfile({ plate: normalizePlate(event.target.value) })}
             placeholder="07 ABC 123"
             maxLength={12}
           />
+          <em className="field-input__hint">
+            {plateCity(profile.plate)
+              ? `Plakadan şehir: ${plateCity(profile.plate)} — topluluk profilinde görünür`
+              : 'Plaka girerseniz şehriniz otomatik belirlenir'}
+          </em>
         </label>
 
         <div className="form-row">
@@ -174,6 +190,58 @@ export default function ProfileScreen() {
             />
           </label>
         </div>
+      </section>
+
+      <section className="card">
+        <h2>
+          <ExternalLink size={16} aria-hidden /> Topluluk profilim
+        </h2>
+        <div className="profile-top">
+          <Avatar user={me} size="lg" />
+          <div className="profile-top__lines">
+            <b>{me.name}</b>
+            <em>
+              {me.city} · {me.plate || 'plaka yok'}
+            </em>
+          </div>
+          <Link to="/karavanci/me" className="btn btn--ghost btn--sm">
+            Görüntüle
+          </Link>
+        </div>
+        <div className="form-row">
+          <label className="field-input">
+            <span>Şehir</span>
+            <input
+              value={profile.city}
+              onChange={(event) => updateProfile({ city: event.target.value })}
+              placeholder="Antalya"
+              maxLength={24}
+            />
+          </label>
+          <label className="field-input">
+            <span>Hakkımda</span>
+            <input
+              value={profile.bio}
+              onChange={(event) => updateProfile({ bio: event.target.value })}
+              placeholder="Yollarda görüşürüz"
+              maxLength={90}
+            />
+          </label>
+        </div>
+        <ul className="member-stats member-stats--inline">
+          <li>
+            <b>{myPosts.length}</b>
+            <span>paylaşım</span>
+          </li>
+          <li>
+            <b>{Math.round(followers)}</b>
+            <span>takipçi</span>
+          </li>
+          <li>
+            <b>{me.following}</b>
+            <span>takip</span>
+          </li>
+        </ul>
       </section>
 
       <section className="card estimate">

@@ -16,7 +16,10 @@ export const DEFAULT_PROFILE: Profile = {
   name: 'Gezgin',
   vehicle: 'moto',
   plate: '',
-  avatar: '🚐',
+  /** Boş bırakılırsa toplulukta isimden türetilen baş harfler gösterilir. */
+  avatar: '',
+  city: '',
+  bio: '',
   consumption: 11,
   fuelPrice: 62.5,
 }

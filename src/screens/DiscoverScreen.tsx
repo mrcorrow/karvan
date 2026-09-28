@@ -13,12 +13,14 @@ import {
   X,
 } from 'lucide-react'
 import { DEFAULT_FILTERS, useApp } from '../store/AppStore'
+import { useSocial } from '../store/SocialStore'
 import { useToast } from '../components/Toast'
 import { camps, getCamp } from '../data/camps'
 import { CAMP_TYPES, SCENERY } from '../data/taxonomy'
 import { searchCamps, cityStats } from '../lib/search'
 import { DEMO_LOCATION } from '../lib/demo'
 import CampCard from '../components/CampCard'
+import PostCard from '../components/PostCard'
 
 export default function DiscoverScreen() {
   const { profile, location, locationLabel, setLocation, favorites, toggleFavorite, setFilters, visited } =
@@ -33,6 +35,8 @@ export default function DiscoverScreen() {
     return searchCamps(camps, { ...DEFAULT_FILTERS, sort: 'mesafe' }, { location }).slice(0, 6)
   }, [location])
   const cities = useMemo(() => cityStats(camps).slice(0, 8), [])
+  const { posts: communityPosts, unreadCount } = useSocial()
+  const hotPosts = useMemo(() => communityPosts.slice(0, 2), [communityPosts])
   const recent = useMemo(
     () => visited.map((id) => getCamp(id)).filter((camp): camp is NonNullable<typeof camp> => Boolean(camp)),
     [visited],
@@ -218,6 +222,24 @@ export default function DiscoverScreen() {
           </div>
         </section>
       )}
+
+      <section className="section">
+        <div className="section__head">
+          <h2>
+            <Sparkle size={16} aria-hidden /> Topluluktan taze notlar
+          </h2>
+          <Link to="/akis" className="section__link">
+            Akışa git
+            {unreadCount > 0 && <i className="section__badge">{unreadCount}</i>}
+            <ArrowRight size={14} aria-hidden />
+          </Link>
+        </div>
+        <div className="post-list post-list--compact">
+          {hotPosts.map((post, index) => (
+            <PostCard key={post.id} post={post} index={index} />
+          ))}
+        </div>
+      </section>
 
       <section className="section">
         <div className="section__head">

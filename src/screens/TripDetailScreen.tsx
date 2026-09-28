@@ -206,19 +206,22 @@ export default function TripDetailScreen() {
           fullscreenAllowed
           className="map-view--card"
         />
-        {mapsUrl && (
-          <div className="map-links">
+        <div className="map-links">
+          {mapsUrl && (
             <a className="btn btn--ghost btn--sm" href={mapsUrl} target="_blank" rel="noreferrer">
               <ExternalLink size={15} aria-hidden /> Google Maps'te aç
             </a>
+          )}
             <button type="button" className="btn btn--ghost btn--sm" onClick={sharePlan}>
               <Share2 size={15} aria-hidden /> Paylaş
             </button>
             <button type="button" className="btn btn--ghost btn--sm" onClick={copyPlan}>
               <Copy size={15} aria-hidden /> Planı kopyala
             </button>
-          </div>
-        )}
+          <Link className="btn btn--primary btn--sm" to={`/akis/yeni?gezi=${trip.id}`}>
+            <Share2 size={15} aria-hidden /> Topluluğa paylaş
+          </Link>
+        </div>
       </section>
 
       <section className="card">
