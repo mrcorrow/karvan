@@ -1,0 +1,46 @@
+{
+  "name": "Karvan — Kamp Keşfi",
+  "short_name": "Karvan",
+  "description": "Türkiye'nin karavan dostu kamp alanlarını keşfet, favorilere ekle, gezi planla.",
+  "lang": "tr-TR",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f3d2e",
+  "theme_color": "#0f3d2e",
+  "categories": ["travel", "navigation", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Haritada keşfet",
+      "short_name": "Harita",
+      "url": "./index.html#/harita"
+    },
+    {
+      "name": "Favorilerim",
+      "short_name": "Favoriler",
+      "url": "./index.html#/favoriler"
+    }
+  ]
+}
