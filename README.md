@@ -4,6 +4,16 @@ Karavancılar için **kamp alanı keşif** uygulaması. Türkçe, mobil öncelik
 telefon tarayıcısında açılır, ana ekrana eklenebilir, çevrimdışı çalışır ve Capacitor ile
 Android/iOS paketine dönüştürülebilir.
 
+## Ekranlar
+
+| Keşfet | Ara | Harita |
+| --- | --- | --- |
+| ![Keşfet](docs/screens/01-kesfet.jpg) | ![Ara](docs/screens/02-arama.jpg) | ![Harita](docs/screens/03-harita.jpg) |
+
+| Kamp detayı | Gezi planlama | Rota özeti |
+| --- | --- | --- |
+| ![Kamp detayı](docs/screens/04-kamp-detayi.jpg) | ![Gezi planlama](docs/screens/05-gezi-planlama.jpg) | ![Rota özeti](docs/screens/06-rota-ozeti.jpg) |
+
 ## Neler var?
 
 | Ekran | İçerik |

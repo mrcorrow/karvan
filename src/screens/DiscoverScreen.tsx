@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import {
   ArrowRight,
   Clock,
+  Heart,
   Info,
   LocateFixed,
   MapPin,
@@ -160,6 +161,17 @@ export default function DiscoverScreen() {
               {term.label}
             </button>
           ))}
+          {favorites.length > 0 && (
+            <button
+              type="button"
+              className="chip chip--fav"
+              onClick={() => quickFilter({ favoritesOnly: true })}
+            >
+              <Heart size={14} aria-hidden />
+              Favorilerim
+              <em>{favorites.length}</em>
+            </button>
+          )}
         </div>
       </section>
 

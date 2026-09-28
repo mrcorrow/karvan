@@ -479,6 +479,15 @@ ol {
   cursor: default;
 }
 
+.chip--fav {
+  color: var(--earth);
+  border-color: color-mix(in srgb, var(--earth) 45%, transparent);
+}
+
+.chip--fav svg {
+  fill: currentColor;
+}
+
 .chip--clear {
   color: var(--earth);
   border-style: dashed;
